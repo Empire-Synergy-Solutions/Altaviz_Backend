@@ -1,0 +1,102 @@
+django-allauth
+django-cors-headers
+djangorestframework
+django-rest-auth
+
+
+altaviz@aristogolden.com.ng
+,Z4]n;i$kZ7@
+
+///////////////////////////////////////////////////
+import ssl
+
+
+sender = "youremail@yandex.ru"
+password = "password123"
+    
+where_to_email = "reciever@anymail.com"
+theme = "this is subject"
+message = "this is your message, say hi to reciever"
+    
+sender_password = password
+session = smtplib.SMTP_SSL('smtp.yandex.ru', 465)
+session.login(sender, sender_password)
+msg = f'From: {sender}\r\nTo: {where_to_email}\r\nContent-Type: text/plain; charset="utf-8"\r\nSubject: {theme}\r\n\r\n'
+msg += message
+session.sendmail(sender, where_to_email, msg.encode('utf8'))
+session.quit()
+
+///////////////////////////////////////////////////////////
+
+
+//////////////////Code to send email via  python:////////////////////////
+
+import smtplib , ssl
+import getpass
+server = smtplib.SMTP_SSL("smtp.gmail.com",465)
+server.ehlo()
+server.starttls
+password = getpass.getpass()   # to hide your password while typing (feels cool)
+server.login("example@gmail.com", password)
+server.sendmail("example@gmail.com" , "sender-example@gmail.com" , "I am trying out python email through coding")
+server.quit()
+/////////////////////////////////////////
+
+
+////////////////////////////////////////
+
+In my case if you got "manager_method" missing 1 required positional argument: 'self' django err you should notice that unlike model.Manager the UserManager need to set as blow
+
+from django.contrib.auth.models import AbstractUser, UserManager
+from django.db.models import Q
+
+class CostumUserManager(UserManager ):
+    
+    def authors(self):
+        return self.filter(Q(is_author=True) | Q(is_superuser=True))
+
+
+class User(AbstractUser):
+    is_author = models.BooleanField(default=False, )
+
+
+    objects = CostumUserManager() # Use () in end of it
+///////////////////////////////////////
+
+
+//////////////////////////////////////
+Important caveat to update the solutions... If you're facing this kind of problem, you've probably tried various solutions around the web telling you to add AUTH_USER_MODEL = users.CustomUser to settings.py and then to add the following code to views.py forms.py and any other file that calls User:
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
+And then you scratch your head when you get the error:
+
+Manager isn't available; 'auth.User' has been swapped for 'users.User'
+Anytime your code references User such as:
+
+User.objects.get()
+Cause you know you already put objects = UserManager() in your custom user class (UserManager being the name of your custom manager that extends BaseUserManager).
+
+Well as it turns out (thank you to @Aldarund) doing:
+
+User = get_user_model() # somewhere at the top of your .py file
+# followed by
+User.objects.get() # in a function/method of that same file
+Is NOT equivalent to:
+
+get_user_model().objects.get() # without the need for User = get_user_model() anywhere
+Perhaps not intuitive, but it turns out that that in python, executing User = get_user_model() once at the time of import does not then result in User being defined across subsequent calls (i.e. it does not turn User into a "constant" of sorts which you might expect if you're coming from a C/C++ background; meaning that the execution of User = get_user_model() occurs at the time of imports, but is then de-referenced before subsequent called to class or function/method in that file).
+
+So to sum up, in all files that reference the User class (e.g. calling functions or variables such as User.objects.get() User.objects.all() User.DoesNotExist etc...):
+
+# Add the following import line
+from django.contrib.auth import get_user_model
+
+# Replace all references to User with get_user_model() such as...
+user = get_user_model().objects.get(pk=uid)
+# instead of  user = User.objects.get(pk=uid)
+# or
+queryset = get_user_model().objects.all()
+# instead of queryset = User.objects.all()
+# etc...
+//////////////////////////////////////

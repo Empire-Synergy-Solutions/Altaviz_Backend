@@ -1,0 +1,106 @@
+<nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-white" id="sidenav-main">
+  <div class="scrollbar-inner">
+    <!-- Brand -->
+    <div class="sidenav-header  align-items-center">
+      <a class="navbar-brand" href="/incidents">
+        <img src="/static/assets/img/brand/logo_altaviz2.jpg" class="navbar-brand-img" alt="Altaviz Support Logo.">
+      </a>
+    </div>
+    <div class="navbar-inner">
+      <!-- Collapse -->
+      <div class="collapse navbar-collapse" id="sidenav-collapse-main">
+        <!-- Nav items -->
+        <ul class="navbar-nav">
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link {% if 'index' in segment %} active {% endif %}" href="/incidents">
+              <i class="ni ni-tv-2 text-primary"></i>
+              <span class="nav-link-text">Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'icons' in segment %} active {% endif %}" href="{% url 'todo:lists' %}">
+              <i class="ni ni-planet text-orange"></i>
+              <span class="nav-link-text">Fault Lists</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'map' in segment %} active {% endif %}" href="{% url 'todo:mine' %}">
+              <i class="ni ni-pin-3 text-primary"></i>
+              <span class="nav-link-text">My Tasks</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'profile' in segment %} active {% endif %}" href="{% url 'todo:external_add' %}">
+              <i class="ni ni-single-02 text-yellow"></i>
+              <span class="nav-link-text">File Tickets</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if 'tables' in segment %} active {% endif %}" href="{% url 'todo:import_csv' %}">
+              <i class="ni ni-bullet-list-67 text-default"></i>
+              <span class="nav-link-text">Import</span>
+            </a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">
+              <i class="ni ni-user-run text-red"></i>
+              <span class="nav-link-text">Logout</span>
+            </a>
+          </li>            
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">
+              <i class="ni ni-key-25 text-info"></i>
+              <span class="nav-link-text">Login</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">
+              <i class="ni ni-circle-08 text-pink"></i>
+              <span class="nav-link-text">Register </span>
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+        <!-- Divider -->
+        <hr class="my-3">
+        <!-- Heading -->
+        <h6 class="navbar-heading p-0 text-muted">
+          <span class="docs-normal">Resources</span>
+        </h6>
+        <!-- Navigation -->
+        <ul class="navbar-nav mb-md-3">
+
+          <li class="nav-item">
+            <a class="nav-link" 
+               target="_blank" 
+               href="#">
+              <i class="ni ni-archive-2"></i>
+              <span class="nav-link-text">Engineer Management</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" 
+               target="_blank" 
+               href="">
+              <i class="ni ni-spaceship text-red"></i>
+              <span class="nav-link-text text-red">Stock Management</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link active active-pro" 
+               target="_blank" 
+               href="#">
+              <i class="ni ni-send text-dark"></i>
+              <span class="nav-link-text">Contact Support</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
