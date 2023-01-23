@@ -19,11 +19,11 @@ from fuelcredit.views.invitation import InvitationView
 from fuelcredit.views.transfer import TransferView
 from fuelcredit.views.wallet import WalletDetail
 
-schema_view = get_swagger_view(title='Easy App API')
+schema_view = get_swagger_view(title='Altaviz Support Help Desk App API')
 
 urlpatterns = [
-    path('rest-auth/', include('rest_auth.urls')),
-    path('rest-auth/registration/', include('rest_auth.registration.urls')),
+    #path('rest-auth/', include('rest_auth.urls')),
+    #path('rest-auth/registration/', include('rest_auth.registration.urls')),
     path('swagger-docs', schema_view),
     path('docs/', include_docs_urls(title='Easy App API')),
     #path('users/', include('users.paths')),
