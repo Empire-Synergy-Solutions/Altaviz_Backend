@@ -15,7 +15,7 @@ django-bootstrap-form==3.4
 django-cors-headers
 django-crispy-forms==1.11.1
 django-extensions==3.2.1
-django-rest-auth
+dj-rest-auth
 django-rest-swagger==2.2.0
 django-todo==2.4.9
 djangorestframework
