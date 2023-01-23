@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'allauth',
     'allauth.account',
-    'rest_auth.registration',
+    #'rest_auth.registration',
     'corsheaders',
     'rest_framework_swagger',
     'bootstrapform',
