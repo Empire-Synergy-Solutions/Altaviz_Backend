@@ -44,7 +44,7 @@ def external_add(request) -> HttpResponse:
             task.task_list = TaskList.objects.get(slug=settings.TODO_DEFAULT_LIST_SLUG)
             task.created_by = request.user
             if defaults("TODO_DEFAULT_ASSIGNEE"):
-                task.assigned_to = get_user_model().objects.get(username=settings.TODO_DEFAULT_ASSIGNEE)
+                task.assigned_to = get_user_model().objects.get(email=settings.TODO_DEFAULT_ASSIGNEE)
             task.save()
 
             # Send email to assignee if we have one

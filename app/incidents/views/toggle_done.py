@@ -21,7 +21,7 @@ def toggle_done(request, task_id: int) -> HttpResponse:
         task = get_object_or_404(Task, pk=task_id)
 
         redir_url = reverse(
-            "todo:list_detail",
+            "list_detail",
             kwargs={"list_id": task.task_list.id, "list_slug": task.task_list.slug},
         )
 

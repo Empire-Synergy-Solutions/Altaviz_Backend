@@ -11,7 +11,7 @@ Note: {{ task.note }}
 {% endif %}
 
 Task details/comments:
-http://{{ site }}{% url 'todo:task_detail' task.id %}
+http://{{ site }}{% url 'task_detail' task.id %}
 
 List {{ task.task_list.name }}:
-http://{{ site }}{% url 'todo:list_detail' task.task_list.id task.task_list.slug %}
+http://{{ site }}{% url 'list_detail' task.task_list.id task.task_list.slug %}

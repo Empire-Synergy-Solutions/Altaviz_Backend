@@ -20,7 +20,7 @@ def import_csv(request) -> HttpResponse:
 
         if not filepath:
             messages.error(request, "You must supply a CSV file to import.")
-            return redirect(reverse("todo:import_csv"))
+            return redirect(reverse("import_csv"))
 
         importer = CSVImporter()
         results = importer.upsert(filepath)
@@ -29,6 +29,6 @@ def import_csv(request) -> HttpResponse:
             ctx["results"] = results
         else:
             messages.error(request, "Could not parse provided CSV file.")
-            return redirect(reverse("todo:import_csv"))
+            return redirect(reverse("import_csv"))
 
     return render(request, "todo/import_csv.html", context=ctx)
