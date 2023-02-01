@@ -67,7 +67,7 @@ def task_detail(request, task_id: int) -> HttpResponse:
             merge_target = forms.ModelChoiceField(
                 queryset=Task.objects.all(),
                 widget=autocomplete.ModelSelect2(
-                    url=reverse("todo:task_autocomplete", kwargs={"task_id": task_id})
+                    url=reverse("task_autocomplete", kwargs={"task_id": task_id})
                 ),
             )
 
@@ -82,7 +82,7 @@ def task_detail(request, task_id: int) -> HttpResponse:
                 raise PermissionDenied
 
             task.merge_into(merge_target)
-            return redirect(reverse("todo:task_detail", kwargs={"task_id": merge_target.pk}))
+            return redirect(reverse("task_detail", kwargs={"task_id": merge_target.pk}))
 
     # Save submitted comments
     handle_add_comment(request, task)
@@ -102,7 +102,7 @@ def task_detail(request, task_id: int) -> HttpResponse:
             item.save()
             messages.success(request, "The task has been edited.")
             return redirect(
-                "todo:list_detail", list_id=task.task_list.id, list_slug=task.task_list.slug
+                "list_detail", list_id=task.task_list.id, list_slug=task.task_list.slug
             )
 
     # Mark complete
@@ -111,7 +111,7 @@ def task_detail(request, task_id: int) -> HttpResponse:
         if results_changed:
             messages.success(request, f"Changed completion status for task {task.id}")
 
-        return redirect("todo:task_detail", task_id=task.id)
+        return redirect("task_detail", task_id=task.id)
 
     if task.due_date:
         thedate = task.due_date
@@ -124,19 +124,19 @@ def task_detail(request, task_id: int) -> HttpResponse:
 
         if file.size > defaults("TODO_MAXIMUM_ATTACHMENT_SIZE"):
             messages.error(request, f"File exceeds maximum attachment size.")
-            return redirect("todo:task_detail", task_id=task.id)
+            return redirect("task_detail", task_id=task.id)
 
         name, extension = os.path.splitext(file.name)
 
         if extension not in defaults("TODO_LIMIT_FILE_ATTACHMENTS"):
             messages.error(request, f"This site does not allow upload of {extension} files.")
-            return redirect("todo:task_detail", task_id=task.id)
+            return redirect("task_detail", task_id=task.id)
 
         Attachment.objects.create(
             task=task, added_by=request.user, timestamp=datetime.datetime.now(), file=file
         )
         messages.success(request, f"File attached successfully")
-        return redirect("todo:task_detail", task_id=task.id)
+        return redirect("task_detail", task_id=task.id)
 
     context = {
         "task": task,

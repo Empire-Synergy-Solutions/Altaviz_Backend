@@ -18,7 +18,7 @@ def remove_attachment(request, attachment_id: int) -> HttpResponse:
     if request.method == "POST":
         attachment = get_object_or_404(Attachment, pk=attachment_id)
 
-        redir_url = reverse("todo:task_detail", kwargs={"task_id": attachment.task.id})
+        redir_url = reverse("task_detail", kwargs={"task_id": attachment.task.id})
 
         # Permissions
         if not (

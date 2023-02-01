@@ -115,7 +115,7 @@ class CSVImporter:
             msg = f"Missing required task creator."
             row_errors.append(msg)
 
-        creator = get_user_model().objects.filter(username=row.get("Created By")).first()
+        creator = get_user_model().objects.filter(email=row.get("Created By")).first()
         if not creator:
             msg = f"Invalid task creator {row.get('Created By')}"
             row_errors.append(msg)
@@ -124,7 +124,7 @@ class CSVImporter:
         # If specified, Assignee must exist
         assignee = None  # Perfectly valid
         if row.get("Assigned To"):
-            assigned = get_user_model().objects.filter(username=row.get("Assigned To"))
+            assigned = get_user_model().objects.filter(email=row.get("Assigned To"))
             if assigned.exists():
                 assignee = assigned.first()
             else:
