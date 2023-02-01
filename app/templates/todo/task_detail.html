@@ -41,7 +41,7 @@
             Edit Task
           </button>
 
-          <form method="post" action="{% url "todo:task_toggle_done" task.id %}" role="form" class="d-inline">
+          <form method="post" action="{% url "task_toggle_done" task.id %}" role="form" class="d-inline">
             {% csrf_token %}
             <div style="display:inline;">
               <button class="btn btn-info btn-sm" type="submit" name="toggle_done">
@@ -50,7 +50,7 @@
             </div>
           </form>
 
-          <form method="post" action="{% url "todo:delete_task" task.id %}" role="form" class="d-inline">
+          <form method="post" action="{% url "delete_task" task.id %}" role="form" class="d-inline">
             {% csrf_token %}
             <div style="display:inline;">
               <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('Are you sure you want to delete this task?');" name="submit_delete">
@@ -82,7 +82,7 @@
 
         <li class="list-group-item">
           <strong>In list:</strong>
-          <a href="{% url 'todo:list_detail' task.task_list.id task.task_list.slug %}">
+          <a href="{% url 'list_detail' task.task_list.id task.task_list.slug %}">
             {{ task.task_list }}
           </a>
         </li>
@@ -142,7 +142,7 @@
                   <td>{{ attachment.added_by.get_full_name }}</td>
                   <td>{{ attachment.extension.lower }}</td>
                   <td>
-                    <form action="{% url "todo:remove_attachment" attachment.id %}" method="POST">
+                    <form action="{% url "remove_attachment" attachment.id %}" method="POST">
                       {% csrf_token %}
                       <input type="submit" value="X" class="btn btn-danger btn-sm">
                     </form>
