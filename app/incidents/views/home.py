@@ -6,8 +6,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.utils import timezone
 #from todo.forms import SearchForm
-from todo.models import Task, TaskList
-from todo.utils import staff_check
+from incidents.models import Task, TaskList
+from incidents.utils import staff_check
 #from django.views.generic import TemplateView
 
 
