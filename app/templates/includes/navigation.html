@@ -3,7 +3,7 @@
     {% if user.is_authenticated %}
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <!-- Search form -->
-      <form class="navbar-search navbar-search-light form-inline mr-sm-3" id="navbar-search-main" action="{% url 'todo:search' %}" method="get" >
+      <form class="navbar-search navbar-search-light form-inline mr-sm-3" id="navbar-search-main" action="{% url 'search' %}" method="get" >
         <div class="form-group mb-0">
           <div class="input-group input-group-alternative input-group-merge">
             <div class="input-group-prepend">
@@ -150,7 +150,7 @@
           </a>
           <div class="dropdown-menu dropdown-menu-lg dropdown-menu-dark bg-default  dropdown-menu-right ">
             <div class="row shortcuts px-4">
-              <a href="{% url 'todo:mine' %}" class="col-4 shortcut-item">
+              <a href="{% url 'mine' %}" class="col-4 shortcut-item">
                 <span class="shortcut-media avatar rounded-circle bg-gradient-red">
                   <i class="ni ni-calendar-grid-58"></i>
                 </span>

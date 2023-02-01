@@ -38,7 +38,7 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 
 #ALLOWED_HOSTS = ['easy-pay-backend-f9jyg.ondigitalocean.app', '127.0.0.1']
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS",
-                          "127.0.0.1, localhost").split(",")
+                          "127.0.0.1, localhost".split(","))
 
 # Application definition
 
@@ -66,8 +66,8 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'bootstrapform',
     'crispy_forms',
-    'todo',
-    "django_extensions",
+    #'todo',
+    'django_extensions',
     # "pinax.waitinglist",
     # "bootstrapform",
     # "pinax.templates",
