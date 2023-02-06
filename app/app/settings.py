@@ -15,9 +15,9 @@ from django.core.management.utils import get_random_secret_key
 from urllib.parse import urlparse
 from dotenv import load_dotenv
 from django.contrib.messages import constants as message_constants
-from todo.mail.producers import imap_producer
-from todo.mail.consumers import tracker_consumer
-from todo.mail.delivery import smtp_backend, console_backend
+from incidents.mail.producers import imap_producer
+from incidents.mail.consumers import tracker_consumer
+from incidents.mail.delivery import smtp_backend, console_backend
 
 load_dotenv()
 
@@ -38,7 +38,7 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 
 #ALLOWED_HOSTS = ['easy-pay-backend-f9jyg.ondigitalocean.app', '127.0.0.1']
 ALLOWED_HOSTS = [os.getenv("DJANGO_ALLOWED_HOSTS",
-                          "127.0.0.1, localhost".split(","))]
+                          "127.0.0.1")]
 
 # Application definition
 
@@ -282,8 +282,8 @@ TODO_MAIL_TRACKERS = {
             input_folder="INBOX", # where to read emails from
         ),
         "consumer": tracker_consumer(
-            group="Access Bank",
-            task_list_slug="abhardware",
+            group="Fault Calls",
+            task_list_slug="faultcalls",
             priority=1,
             task_title_format="[TEST_MAIL] {subject}",
         )
@@ -317,6 +317,6 @@ TODO_ALLOWED_FILE_ATTACHMENTS = [".jpg", ".gif", ".csv", ".pdf", ".zip"]
 TODO_MAXIMUM_ATTACHMENT_SIZE = 5000000  # In bytes
 # If you use the "public" ticket filing option, to which list should these tickets be saved?
 # Defaults to first list found, which is probably not what you want!
-TODO_DEFAULT_LIST_SLUG = 'abhardware'
+TODO_DEFAULT_LIST_SLUG = 'faultcalls'
 TODO_DEFAULT_ASSIGNEE = None
 TODO_STAFF_ONLY = False
