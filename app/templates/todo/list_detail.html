@@ -87,7 +87,7 @@
       // The JQuery plugin tableDnD provides a serialize() function which provides the re-ordered
       // data in a list. We pass that list as an object ("data") to a Django view
       // to save new priorities on each task in the list.
-      $.post("{% url 'todo:reorder_tasks' %}", data, "json");
+      $.post("{% url 'reorder_tasks' %}", data, "json");
       return false;
     };
 

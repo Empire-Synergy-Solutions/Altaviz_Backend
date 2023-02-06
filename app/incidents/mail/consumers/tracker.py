@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model
 from django.conf import settings
 from html2text import html2text
 from email.utils import parseaddr
-from models import Comment, Task, TaskList
+from ...models import Comment, Task, TaskList
 
 logger = logging.getLogger(__name__)
 
