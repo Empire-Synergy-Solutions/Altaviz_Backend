@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 from django.conf import settings
 from html2text import html2text
 from email.utils import parseaddr
+from incidents.mail.producers.message import Message
 from ...models import Comment, Task, TaskList
 
 logger = logging.getLogger(__name__)
@@ -44,10 +45,10 @@ def message_text(message):
 
 
 def format_task_title(format_string, message):
-    return format_string.format(subject=message["subject"], author=message["from"])
+    return format_string.format(subject=message.subject, author=message.sender)
 
 
-DJANGO_TODO_THREAD = re.compile(r"<thread-(\d+)@django-todo>")
+DJANGO_TODO_THREAD = re.compile(r"<thread-(\d+)@incidents>")
 
 
 def parse_references(task_list, references):
@@ -73,41 +74,44 @@ def parse_references(task_list, references):
 
 
 def insert_message(task_list, message, priority, task_title_format):
-    if "message-id" not in message:
-        logger.warning("missing message id, ignoring message")
-        return
+    #if message.id not in message:
+        #logger.warning("missing message id, ignoring message")
+        #return
 
-    if "from" not in message:
-        logger.warning('missing "From" header, ignoring message')
-        return
+    #if sender not in message.sender:
+        #logger.warning('missing "From" header, ignoring message')
+        #return
 
-    if "subject" not in message:
-        logger.warning('missing "Subject" header, ignoring message')
-        return
+    #if subject not in message.subject:
+        #logger.warning('missing "Subject" header, ignoring message')
+        #return
 
     logger.info(
         "received message:\t"
-        f"[Subject: {message['subject']}]\t"
-        f"[Message-ID: {message['message-id']}]\t"
-        f"[References: {message['references']}]\t"
-        f"[To: {message['to']}]\t"
-        f"[From: {message['from']}]"
+        f"[Subject: {message.subject}]\t"
+        f"[Message-ID: {message.id}]\t"
+        f"[Date: {message.date}]\t"
+        f"[To: {message.recipient}]\t"
+        f"[Thread references: {message.thread_id}]\t"
+        f"[From: {message.sender}]"
     )
 
     # Due to limitations in MySQL wrt unique_together and TextField (grrr),
     # we must use a CharField rather than TextField for message_id.
     # In the unlikeley event that we get a VERY long inbound
     # message_id, truncate it to the max_length of a MySQL CharField.
-    original_message_id = message["message-id"]
+    original_message_id = message.id
     message_id = (
         (original_message_id[:252] + "...")
         if len(original_message_id) > 255
         else original_message_id
     )
-    message_from = message["from"]
-    text = message_text(message)
+    message_from = message.sender
+    #text = message_body(message)
+    text = message.html
+    message_date = message.date
 
-    related_messages, answer_thread = parse_references(task_list, message.get("references", ""))
+    related_messages, answer_thread = parse_references(task_list, references=message.thread_id)
 
     # find the most relevant task to add a comment on.
     # among tasks in the selected task list, find the task having the
@@ -132,6 +136,7 @@ def insert_message(task_list, message, priority, task_title_format):
                 title=format_task_title(task_title_format, message),
                 task_list=task_list,
                 created_by=match_user(message_from),
+                created_date=message_date,
             )
         logger.info("using task: %r", best_task)
 
@@ -139,7 +144,7 @@ def insert_message(task_list, message, priority, task_title_format):
             task=best_task,
             email_message_id=message_id,
             defaults={"email_from": message_from, "body": text},
-            author=match_user(message_from), # TODO: Write test for this
+            author=match_user(message_from=message_from), # TODO: Write test for this
         )
         logger.info("created comment: %r", comment)
 
@@ -156,16 +161,16 @@ def tracker_consumer(
             logger.exception("got exception while inserting message")
 
 
-def match_user(email):
+def match_user(email, message_from ):
     """ This function takes an email and checks for a registered user."""
-
+    
     if not settings.TODO_MAIL_USER_MAPPER:
-        user = None
+        user = message_from
     else:
         try:
             # Find the first user that matches the email
             user = get_user_model().objects.get(email=parseaddr(email)[1])
         except get_user_model().DoesNotExist:
-            user = None
+            user = message_from
 
     return user

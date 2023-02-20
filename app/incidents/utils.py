@@ -4,12 +4,15 @@ import os
 import time
 
 from django.conf import settings
+from functools import wraps
 from django.contrib.sites.models import Site
 from django.core import mail
 from django.template.loader import render_to_string
 
 from .defaults import defaults
 from .models import Attachment, Comment, Task
+#from incidents import models
+
 
 log = logging.getLogger(__name__)
 

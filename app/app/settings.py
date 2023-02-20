@@ -270,12 +270,11 @@ TODO_MAIL_TRACKERS = {
     # configuration for worker "test_tracker"
     "test_tracker": {
         "producer": imap_producer(
-            host="mail.aristogolden.com.ng",
-            username="altaviz@aristogolden.com.ng",
-            password=",Z4]n;i$kZ7@",
-            port=993,
+           # host="mail.aristogolden.com.ng",
+            #username="altaviz@aristogolden.com.ng",
+            #password=",Z4]n;i$kZ7@",
             #use_ssl='False',
-            
+
             # process_all=False, # by default, only unseen emails are processed
             # preserve=False, # delete emails if False
             # nap_duration=1, # duration of the pause between polling rounds
@@ -285,7 +284,7 @@ TODO_MAIL_TRACKERS = {
             group="Fault Calls",
             task_list_slug="faultcalls",
             priority=1,
-            task_title_format="[TEST_MAIL] {subject}",
+            task_title_format="[MAIL] {subject}",
         )
     }
 }
