@@ -1,25 +1,40 @@
 import email
 import email.parser
-import imaplib
+#import imaplib
+#from googleapiclient.discovery import build
 import logging
 import time
+
+#from .common import gmail_authenticate, search_messages
+from .label import Label
+from .gmail import Gmail
+from .attachment import Attachment
+from .query import construct_query
+from .message import Message
 
 from email.policy import default
 from contextlib import contextmanager
 
 logger = logging.getLogger(__name__)
 
-
+ #gmail = Gmail()
 def imap_check(command_tuple):
     status, ids = command_tuple
     assert status == "OK", ids
 
+def gmail_check (conn, message):
+    msg = conn.users().messages().get(userId='me', id=message['id'], format='full').execute()
+    # parts can be the message body, or attachments
+    payload = msg['payload']
+    headers = payload.get("headers")
+    parts = payload.get("parts")
 
 @contextmanager
-def imap_connect(host, port, username, password):
-    conn = imaplib.IMAP4_SSL(host=host, port=port)
-    conn.login(username, password)
-    imap_check(conn.list())
+def imap_connect():
+    # conn = imaplib.IMAP4_SSL(host=host, port=port)
+    # conn.login(username, password)
+    conn = gmail_authenticate()
+    #imap_check(conn.list())
     try:
         yield conn
     finally:
@@ -47,41 +62,50 @@ def search_message(conn, *filters):
 def imap_producer(
     process_all=False,
     preserve=False,
-    host=None,
-    port=993,
-    username=None,
-    password=None,
+    #host=None,
+    #port=993,
+    #username=None,
+    #password=None,
     nap_duration=1,
     input_folder="INBOX",
 ):
     logger.debug("starting IMAP worker")
-    imap_filter = "(ALL)" if process_all else "(UNSEEN)"
+    #imap_filter = "(ALL)" if process_all else "(UNSEEN)"
+    #gmail_filter = "is:unread"
+    #gmail = Gmail()
+    gmail = Gmail()
 
     def process_batch():
         logger.debug("starting to process batch")
         # reconnect each time to avoid repeated failures due to a lost connection
-        with imap_connect(host, port, username, password) as conn:
-            # select the requested folder
-            imap_check(conn.select(input_folder, readonly=False))
+        #messages = gmail.get_unread_inbox()
+        query_params_1 = {
+        "newer_than": (2, "day"),
+        "unread": True}
+        messages = gmail.get_unread_inbox(query=construct_query(query_params_1))
+        try:
+            #for message_uid, message in search_message(conn, imap_filter):
+            #results = search_messages(conn, gmail_filter)
+            for  message in messages :
+                logger.info(f"received message {message.id}{message.subject}{message.date}{message.sender}")
+                try:
+                    yield message
+                except Exception:
+                    logger.exception(f"something went wrong while processing {message.subject}")
+                    raise
 
-            try:
-                for message_uid, message in search_message(conn, imap_filter):
-                    logger.info(f"received message {message_uid}")
-                    try:
-                        yield message
-                    except Exception:
-                        logger.exception(f"something went wrong while processing {message_uid}")
-                        raise
-
-                    if not preserve:
-                        # tag the message for deletion
-                        conn.store(message_uid, "+FLAGS", "\\Deleted")
-                else:
-                    logger.debug("did not receive any message")
-            finally:
-                if not preserve:
-                    # flush deleted messages
-                    conn.expunge()
+                #if not preserve:
+                    # tag the message for deletion
+                    #gmail.store(message_uid, "+FLAGS", "\\Deleted")
+            else:
+                logger.debug("did not receive any message")
+        finally:
+            if not preserve:
+                # flush deleted messages
+                #message_length = len(messages)
+                #message_to_read = messages[ x for x in range(messages)]
+                message_to_read = messages
+                message_to_read.mark_as_unread()
 
     while True:
         try:
